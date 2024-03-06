@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WP API Walker</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+
+    <body>
+        <!-- The search input will be initially hidden and will be shown after a type is selected -->
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Type to search..."
+            autofocus
+            style="display: none"
+        /><!-- Make sure this is set to none to start with -->
+        <div id="loader" class="loader"></div>
+        <div id="results"></div>
+        <script src="popup.js"></script>
+    </body>
+</html>

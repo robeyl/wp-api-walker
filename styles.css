@@ -1,0 +1,106 @@
+body {
+    width: 300px;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+}
+
+#search-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.result-item {
+    padding: 8px;
+    background-color: #f0f0f0;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: #e0e0e0;
+}
+
+.loader,
+.loader:before,
+.loader:after {
+    border-radius: 50%;
+}
+.loader {
+    color: #ffffff;
+    font-size: 11px;
+    text-indent: -99999em;
+    margin: 55px auto;
+    position: relative;
+    width: 10em;
+    height: 10em;
+    box-shadow: inset 0 0 0 1em;
+    transform: translateZ(0);
+}
+
+.loader:before,
+.loader:after {
+    position: absolute;
+    content: "";
+}
+.loader:before {
+    width: 5.2em;
+    height: 10.2em;
+    background: #0dc5c1;
+    border-radius: 10.2em 0 0 10.2em;
+    top: -0.1em;
+    left: -0.1em;
+    transform: rotate(165deg);
+    transform-origin: 5.1em 5.1em;
+}
+.loader:after {
+    width: 5.2em;
+    height: 10.2em;
+    background: #0dc5c1;
+    border-radius: 0 10.2em 10.2em 0;
+    top: -0.1em;
+    right: -0.1em;
+    transform: rotate(345deg);
+    transform-origin: 0.1em 5.1em;
+}
+
+/* Add this keyframes definition for the spinning effect */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Update your .loader class with animation */
+.loader {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite; /* Use the spin animation with a duration of 2 seconds, linear timing function, infinite repetition */
+}
+
+/* You can remove or comment out the before and after pseudo-elements if they are not needed */
+.loader:before,
+.loader:after {
+    display: none;
+}
+
+.status-icon {
+    margin-left: 10px;
+}
+
+.accessible {
+    color: green;
+    content: "✓";
+}
+
+.inaccessible {
+    color: red;
+    content: "✗";
+}
