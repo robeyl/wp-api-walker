@@ -1,8 +1,10 @@
-# WP API Walker
+# WP API Walker - Chrome Extension
 
 ## Description
 
 The WP API Walker extension is a browser extension designed to enhance the experience of navigating through WordPress sites. It offers a little popup palette that allows users to quickly search and access different types of content (e.g., pages, posts, custom post types) available on any WordPress site via its REST API.
+
+![demo of using this extension](images/wp-api-walker.gif "WP API Walker preview")
 
 ## Features
 
