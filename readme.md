@@ -37,7 +37,7 @@ This extension is currently built using v2 of the Chrome Extension Manifest, and
 2. Open the Chrome Extensions page by navigating to `chrome://extensions/`.
 3. Enable "Developer mode" at the top right.
 4. Click on "Load unpacked" and select the directory where the extension is saved.
-5. The WordPress Command Palette Extension should now be added to your browser and ready to use.
+5. The WP API Walker extension should now be added to your browser and ready to use.
 
 ## Contributing
 
