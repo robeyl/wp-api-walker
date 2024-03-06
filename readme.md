@@ -4,7 +4,7 @@
 
 The WP API Walker extension is a browser extension designed to enhance the experience of navigating through WordPress sites. It offers a little popup palette that allows users to quickly search and access different types of content (e.g., pages, posts, custom post types) available on any WordPress site via its REST API.
 
-![demo of using this extension](images/wp-api-walker.gif "WP API Walker preview")
+![demo gif of using this extension](images/wp-api-walker.gif "WP API Walker preview")
 
 ## Features
 
@@ -12,6 +12,10 @@ The WP API Walker extension is a browser extension designed to enhance the exper
 - **Search Capability**: Offers a search function to quickly find the content you're looking for.
 - **Easy Navigation**: Navigate through the available content types with ease.
 - **Status Indicators**: Visually indicates whether content types are accessible or restricted.
+
+![demo image 1 of using this extension](images/wp-api-walker-pic1.jpg "WP API Walker listing Types")
+![demo image 2 of using this extension](images/wp-api-walker-pic2.jpg "WP API Walker listing items under selected type")
+![demo image 3 of using this extension](images/wp-api-walker-pic3.jpg "WP API Walker searching listed items")
 
 ## How to Use
 
