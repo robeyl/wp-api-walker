@@ -90,17 +90,48 @@ function checkTypeStatus(endpoint, statusElement, itemElement, type) {
 // Fetch the types from the WordPress REST API
 function fetchTypes(baseURL) {
   showLoader(); // Show the loader
-  const endpoint = `${baseURL}/wp-json/wp/v2/types`;
-  fetch(endpoint)
-    .then((response) => response.json())
-    .then((data) => {
+  const typesEndpoint = `${baseURL}/wp-json/wp/v2/types`;
+
+  fetch(typesEndpoint)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Proceed if types are successfully fetched
       hideLoader(); // Hide the loader
       displayTypes(data);
     })
-    .catch((error) => {
-      hideLoader(); // Hide the loader
-      console.error("Error:", error);
+    .catch(error => {
+      console.error("Error fetching types:", error);
+      // Fallback to default endpoints if types cannot be fetched
+      fallbackToDefaultEndpoints(baseURL);
     });
+}
+
+function fallbackToDefaultEndpoints(baseURL) {
+  const defaultEndpoints = {
+    "posts": "/wp-json/wp/v2/posts",
+    "pages": "/wp-json/wp/v2/pages",
+    "media": "/wp-json/wp/v2/media"
+  };
+
+  // Simulate a types object for the default endpoints
+  const simulatedTypes = Object.keys(defaultEndpoints).reduce((acc, key) => {
+    acc[key] = {
+      name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the first letter
+      _links: {
+        "wp:items": [{href: `${baseURL}${defaultEndpoints[key]}`}]
+      }
+    };
+    return acc;
+  }, {});
+
+  // Use the simulated types data to display the default content types
+  hideLoader(); // Ensure the loader is hidden
+  displayTypes(simulatedTypes);
 }
 
 // Display the types in the popup
