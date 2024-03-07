@@ -2,6 +2,7 @@
   "manifest_version": 2,
   "name": "WP API Walker",
   "version": "0.2.1",
+  "homepage_url": "https://github.com/robeyl/wp-api-walker",
   "description": "Search through WordPress pages via REST API.",
   "permissions": ["activeTab", "https://*/wp-json/wp/v2/pages"],
   "browser_action": {
