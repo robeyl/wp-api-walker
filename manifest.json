@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WP API Walker",
-  "version": "1.0.5",
+  "version": "0.2.1",
   "description": "Search through WordPress pages via REST API.",
   "permissions": ["activeTab", "https://*/wp-json/wp/v2/pages"],
   "browser_action": {
