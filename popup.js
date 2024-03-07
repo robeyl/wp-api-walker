@@ -16,17 +16,37 @@ function hideLoader() {
 
 let currentItems = []; // Holds the current list of items to be searched
 
+let allItems = [];
+
 function handleSearchInput() {
-  const searchTerm = this.value.toLowerCase(); // 'this' refers to the searchInput element
+  const searchTerm = this.value.toLowerCase();
   const resultsContainer = document.getElementById("results");
 
   // Clear existing items and re-add the heading
-  resultsContainer.innerHTML = `<h3>${currentTypeName}</h3>`; // Assumes currentTypeName is globally accessible
+  resultsContainer.innerHTML = `<h3>${currentTypeName}</h3>`;
 
-  const filteredItems = currentItems.filter((item) =>
+  const filteredItems = allItems.filter((item) =>
     item.title.rendered.toLowerCase().includes(searchTerm),
   );
   filteredItems.forEach((item) => displayItem(item, resultsContainer));
+}
+
+function fetchTotalCount(endpoint) {
+  const countEndpoint = `${endpoint}?per_page=1`;
+
+  return fetch(countEndpoint)
+    .then((response) => {
+      const totalCount = response.headers.get("X-WP-Total");
+      if (totalCount) {
+        return parseInt(totalCount, 10);
+      } else {
+        throw new Error("Total count header not found");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      return 0;
+    });
 }
 
 // Modified checkTypeStatus function that checks the accessibility of items
@@ -54,7 +74,7 @@ function checkTypeStatus(endpoint, statusElement, itemElement, type) {
       itemElement.addEventListener("click", () => {
         // Logic to handle click for accessible items, such as fetching and displaying items of the selected type
         // For example:
-        fetchItems(type._links["wp:items"][0].href, type.name);
+        fetchItems(type._links["wp:items"][0].href, type.name, 1);
       });
     })
     .catch((error) => {
@@ -92,7 +112,7 @@ function displayTypes(types) {
 
   // Add a heading for Types
   const typesHeading = document.createElement("h3");
-  typesHeading.textContent = "Types";
+  typesHeading.textContent = `Types (${Object.keys(types).length})`;
   resultsContainer.appendChild(typesHeading);
 
   for (const type in types) {
@@ -121,18 +141,27 @@ function displayTypes(types) {
 }
 
 // Fetch items of a selected type
-function fetchItems(endpoint, typeName) {
-  showLoader(); // Show the loader
-  const modifiedEndpoint = `${endpoint}?per_page=100`;
+function fetchItems(endpoint, typeName, page = 1) {
+  showLoader();
 
-  fetch(modifiedEndpoint)
-    .then((response) => response.json())
-    .then((items) => {
-      hideLoader(); // Hide the loader
-      displayItems(items, typeName); // Pass typeName to displayItems
+  fetchTotalCount(endpoint)
+    .then((totalCount) => {
+      const modifiedEndpoint = `${endpoint}?per_page=40&page=${page}`;
+
+      fetch(modifiedEndpoint)
+        .then((response) => response.json())
+        .then((items) => {
+          hideLoader();
+          allItems = allItems.concat(items);
+          displayItems(items, typeName, endpoint, page, totalCount);
+        })
+        .catch((error) => {
+          hideLoader();
+          console.error("Error:", error);
+        });
     })
     .catch((error) => {
-      hideLoader(); // Hide the loader
+      hideLoader();
       console.error("Error:", error);
     });
 }
@@ -140,33 +169,51 @@ function fetchItems(endpoint, typeName) {
 // Global variable to hold the current type name for heading updates
 let currentTypeName = "";
 
-function displayItems(items, typeName) {
+function displayItems(items, typeName, endpoint, page, totalCount) {
   const searchInput = document.getElementById("search-input");
-  searchInput.style.display = "block"; // Make sure to display the search box
+  searchInput.style.display = "block";
   const resultsContainer = document.getElementById("results");
-  resultsContainer.innerHTML = "";
+  resultsContainer.innerHTML = ""; // Clear previous content
 
-  currentTypeName = typeName; // Update global variable
-  currentItems = items; // Update global items list
+  currentTypeName = typeName;
 
-  // Add a dynamic heading based on the type of items being listed
   const itemsHeading = document.createElement("h3");
-  itemsHeading.textContent = typeName;
+  itemsHeading.textContent = `${typeName} (${items.length} of ${totalCount})`;
   resultsContainer.appendChild(itemsHeading);
 
-  // Display all items initially
+  // Append each item to the resultsContainer
   items.forEach((item) => displayItem(item, resultsContainer));
 
-  // No need to remove the previous listener - just ensure it's properly set up
-  // Note: If this still causes issues, you may need to ensure this function isn't adding multiple listeners over time
-  searchInput.oninput = handleSearchInput; // Direct assignment
+  searchInput.oninput = handleSearchInput;
+
+  // Add Next/Prev navigation buttons
+  const navContainer = document.createElement("div");
+  navContainer.className = "nav-container";
+
+  const prevButton = document.createElement("button");
+  prevButton.textContent = "Prev";
+  prevButton.disabled = page === 1;
+  prevButton.onclick = () => fetchItems(endpoint, typeName, page - 1);
+  navContainer.appendChild(prevButton);
+
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Next";
+  nextButton.disabled = items.length < 40;
+  nextButton.onclick = () => fetchItems(endpoint, typeName, page + 1);
+  navContainer.appendChild(nextButton);
+
+  resultsContainer.appendChild(navContainer);
 }
 
 // Function to display each item
 function displayItem(item, container) {
   const div = document.createElement("div");
   div.className = "result-item";
-  div.textContent = item.title.rendered;
+
+  // Decode HTML entities in the title
+  const decodedTitle = he.decode(item.title.rendered);
+
+  div.textContent = decodedTitle;
   div.onclick = function () {
     chrome.tabs.create({ url: item.link }); // Open in new tab
   };
